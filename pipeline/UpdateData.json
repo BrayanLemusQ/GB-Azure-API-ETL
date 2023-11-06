@@ -1,0 +1,25 @@
+{
+	"name": "UpdateData",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",
+					"method": "GET"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
