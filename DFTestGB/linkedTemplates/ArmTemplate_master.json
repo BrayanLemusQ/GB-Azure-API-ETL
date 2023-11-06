@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DFTestGB"
 		},
+		"UpdateDataTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -33,6 +37,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"UpdateDataTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('UpdateDataTrigger_properties_typeProperties_scope')]"
 					}
 				}
 			},
