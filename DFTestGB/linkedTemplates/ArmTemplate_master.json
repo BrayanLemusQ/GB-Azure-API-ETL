@@ -7,9 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DFTestGB"
 		},
+		"AzureDataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage'"
+		},
 		"UpdateDataTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
+		},
+		"AzureDataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dfgbteststorageaccount.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -37,6 +45,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureDataLakeStorage_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage_accountKey')]"
+					},
+					"AzureDataLakeStorage_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage_properties_typeProperties_url')]"
 					},
 					"UpdateDataTrigger_properties_typeProperties_scope": {
 						"value": "[parameters('UpdateDataTrigger_properties_typeProperties_scope')]"
