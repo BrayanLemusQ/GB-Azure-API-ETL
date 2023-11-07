@@ -3,9 +3,33 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Web1",
-				"type": "WebActivity",
+				"name": "Set DateTime Execution",
+				"type": "SetVariable",
 				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "LastFileDateTime",
+					"value": {
+						"value": "@formatDateTime(utcNow(), 'yyyyMMdd_HHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set DateTime Execution",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -15,11 +39,80 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",
-					"method": "GET"
-				}
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_StagingCsvFiles",
+						"type": "DatasetReference",
+						"parameters": {
+							"File_System": {
+								"value": "@variables('FileSystem')",
+								"type": "Expression"
+							},
+							"Directory": "initial",
+							"File_Name": "jobs.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_StagingCsvFiles",
+						"type": "DatasetReference",
+						"parameters": {
+							"File_System": {
+								"value": "@variables('FileSystem')",
+								"type": "Expression"
+							},
+							"Directory": "bronze",
+							"File_Name": {
+								"value": "@concat('jobs',variables('LastFileDateTime'),'.csv')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
+		"variables": {
+			"LastFileDateTime": {
+				"type": "String"
+			},
+			"FileSystem": {
+				"type": "String",
+				"defaultValue": "datacontainer"
+			}
+		},
 		"annotations": []
 	}
 }
