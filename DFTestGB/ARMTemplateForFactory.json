@@ -159,7 +159,14 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Repos/brayan.lemus.q@gmail.com/GB-Azure-API-ETL/databricksProject/TestNotebook"
+							"notebookPath": "/Repos/brayan.lemus.q@gmail.com/GB-Azure-API-ETL/databricksProject/TestNotebook",
+							"baseParameters": {
+								"lastFileDatetime": {
+									"value": "@variables('LastFileDateTime')",
+									"type": "Expression"
+								},
+								"table": "jobs"
+							}
 						},
 						"linkedServiceName": {
 							"referenceName": "AzureDatabricks",
