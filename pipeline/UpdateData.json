@@ -37,12 +37,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "gfh",
-						"value": "hgh"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
@@ -87,7 +82,7 @@
 							},
 							"Directory": "initial",
 							"File_Name": {
-								"value": "@pipeline().parameters.File",
+								"value": "@pipeline().parameters.FileName",
 								"type": "Expression"
 							}
 						}
@@ -118,7 +113,7 @@
 					{
 						"activity": "Copy data1",
 						"dependencyConditions": [
-							"Failed"
+							"Completed"
 						]
 					}
 				],
@@ -147,7 +142,7 @@
 			}
 		],
 		"parameters": {
-			"File": {
+			"FileName": {
 				"type": "string"
 			}
 		},

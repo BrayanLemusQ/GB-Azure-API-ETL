@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"File": "@triggerBody().data.filename"
+					"FileName": "@triggerBody().data.filename"
 				}
 			}
 		],
@@ -20,7 +20,7 @@
 			"subjectBeginsWith": "",
 			"scope": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents",
 			"events": [
-				"UpdateEvent"
+				"UpdateEvent2"
 			]
 		}
 	}
