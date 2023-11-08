@@ -23,6 +23,14 @@
 			"type": "string",
 			"defaultValue": "1108-014710-2jqobjmt"
 		},
+		"TriggerFileName_properties_UpdateData_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().data.filename"
+		},
+		"TriggerFileName_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
+		},
 		"UpdateDataTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
@@ -117,7 +125,10 @@
 										"type": "Expression"
 									},
 									"Directory": "initial",
-									"File_Name": "jobs.csv"
+									"File_Name": {
+										"value": "@pipeline().parameters.FileName",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -177,6 +188,11 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
 				"variables": {
 					"LastFileDateTime": {
 						"type": "String"
@@ -184,6 +200,12 @@
 					"FileSystem": {
 						"type": "String",
 						"defaultValue": "datacontainer"
+					},
+					"table": {
+						"type": "String"
+					},
+					"test_variable": {
+						"type": "String"
 					}
 				},
 				"annotations": []
@@ -325,6 +347,38 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TriggerFileName')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "UpdateData",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"FileName": "[parameters('TriggerFileName_properties_UpdateData_parameters_FileName')]"
+						}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('TriggerFileName_properties_typeProperties_scope')]",
+					"events": [
+						"UpdateEvent2"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/UpdateData')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/UpdateDataTrigger')]",

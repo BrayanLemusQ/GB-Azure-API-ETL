@@ -17,6 +17,12 @@
 		"AzureDatabricks_properties_typeProperties_existingClusterId": {
 			"value": "1108-014710-2jqobjmt"
 		},
+		"TriggerFileName_properties_UpdateData_parameters_FileName": {
+			"value": "@triggerBody().data.filename"
+		},
+		"TriggerFileName_properties_typeProperties_scope": {
+			"value": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
+		},
 		"UpdateDataTrigger_properties_typeProperties_scope": {
 			"value": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		}
