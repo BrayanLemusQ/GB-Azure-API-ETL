@@ -110,7 +110,7 @@
 					{
 						"activity": "Copy data1",
 						"dependencyConditions": [
-							"Completed"
+							"Failed"
 						]
 					}
 				],
@@ -145,6 +145,9 @@
 			"FileSystem": {
 				"type": "String",
 				"defaultValue": "datacontainer"
+			},
+			"table": {
+				"type": "String"
 			}
 		},
 		"annotations": []
