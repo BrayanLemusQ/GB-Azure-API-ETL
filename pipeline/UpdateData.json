@@ -37,7 +37,12 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "gfh",
+						"value": "hgh"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
@@ -81,7 +86,10 @@
 								"type": "Expression"
 							},
 							"Directory": "initial",
-							"File_Name": "jobs.csv"
+							"File_Name": {
+								"value": "@pipeline().parameters.File",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -138,6 +146,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"File": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"LastFileDateTime": {
 				"type": "String"
@@ -147,6 +160,9 @@
 				"defaultValue": "datacontainer"
 			},
 			"table": {
+				"type": "String"
+			},
+			"test_variable": {
 				"type": "String"
 			}
 		},
