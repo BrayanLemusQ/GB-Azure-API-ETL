@@ -2,7 +2,7 @@
 	"name": "UpdateDataTriggerJob",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
