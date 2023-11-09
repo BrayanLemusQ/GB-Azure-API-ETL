@@ -1,0 +1,27 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline1",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"filename": "@triggerBody().fileName"
+				}
+			}
+		],
+		"type": "CustomEventsTrigger",
+		"typeProperties": {
+			"subjectEndsWith": "",
+			"subjectBeginsWith": "",
+			"scope": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents",
+			"events": [
+				"UpdateParameter"
+			]
+		}
+	}
+}
