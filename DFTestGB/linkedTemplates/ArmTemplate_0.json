@@ -23,7 +23,11 @@
 			"type": "string",
 			"defaultValue": "1108-014710-2jqobjmt"
 		},
-		"EmployeesPerDepartmentTrigger_properties_typeProperties_scope": {
+		"trigger1_properties_EmployeesPerJobandDepartment_parameters_param_test": {
+			"type": "string",
+			"defaultValue": "@triggerBody().data.myValue"
+		},
+		"trigger1_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
@@ -43,12 +47,20 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Wait1",
-						"type": "Wait",
+						"name": "Set variable1",
+						"type": "SetVariable",
 						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
 						"userProperties": [],
 						"typeProperties": {
-							"waitTimeInSeconds": 1
+							"variableName": "variable",
+							"value": {
+								"value": "@pipeline().parameters.filename",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -58,6 +70,11 @@
 				"parameters": {
 					"filename": {
 						"type": "string"
+					}
+				},
+				"variables": {
+					"variable": {
+						"type": "String"
 					}
 				},
 				"annotations": []
@@ -71,17 +88,35 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Wait1",
-						"type": "Wait",
+						"name": "Set variable1",
+						"type": "SetVariable",
 						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
 						"userProperties": [],
 						"typeProperties": {
-							"waitTimeInSeconds": 1
+							"variableName": "variable",
+							"value": {
+								"value": "@pipeline().parameters.param_test",
+								"type": "Expression"
+							}
 						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"param_test": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"variable": {
+						"type": "String"
+					}
 				},
 				"annotations": []
 			},
@@ -221,7 +256,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/EmployeesPerDepartmentTrigger')]",
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -230,24 +265,26 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "EmployeesPerDepartment",
+							"referenceName": "EmployeesPerJobandDepartment",
 							"type": "PipelineReference"
 						},
-						"parameters": {}
+						"parameters": {
+							"param_test": "[parameters('trigger1_properties_EmployeesPerJobandDepartment_parameters_param_test')]"
+						}
 					}
 				],
 				"type": "CustomEventsTrigger",
 				"typeProperties": {
 					"subjectEndsWith": "",
-					"subjectBeginsWith": "EmployeesPerDepartmentTrigger",
-					"scope": "[parameters('EmployeesPerDepartmentTrigger_properties_typeProperties_scope')]",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
 					"events": [
-						"EmpPerDe"
+						"EventoNuevo"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/EmployeesPerDepartment')]"
+				"[concat(variables('factoryId'), '/pipelines/EmployeesPerJobandDepartment')]"
 			]
 		},
 		{
