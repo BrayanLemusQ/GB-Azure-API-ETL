@@ -132,7 +132,10 @@
 							"value": "@variables('LastFileDateTime')",
 							"type": "Expression"
 						},
-						"table": "jobs"
+						"table": {
+							"value": "@variables('FileName')",
+							"type": "Expression"
+						}
 					}
 				},
 				"linkedServiceName": {
@@ -170,7 +173,8 @@
 				"type": "String"
 			},
 			"FileSystem": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "datacontainer"
 			},
 			"table": {
 				"type": "String"
