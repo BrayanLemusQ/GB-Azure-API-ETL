@@ -1,5 +1,5 @@
 {
-	"name": "UpdateDataTrigger",
+	"name": "UpdateDataTriggerJob",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
