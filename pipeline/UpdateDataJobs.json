@@ -24,7 +24,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Set DateTime Execution",
+						"activity": "Set DateTime Execution_copy1",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -82,7 +82,7 @@
 							},
 							"Directory": "initial",
 							"File_Name": {
-								"value": "jobs.csv",
+								"value": "@concat(variables('FileName'), '.csv')",
 								"type": "Expression"
 							}
 						}
@@ -99,7 +99,7 @@
 							},
 							"Directory": "bronze",
 							"File_Name": {
-								"value": "@concat('jobs',variables('LastFileDateTime'),'.csv')",
+								"value": "@concat(variables('FileName'),variables('LastFileDateTime'),'.csv')",
 								"type": "Expression"
 							}
 						}
@@ -139,6 +139,30 @@
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "Set DateTime Execution_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set DateTime Execution",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FileName",
+					"value": {
+						"value": "jobs",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"variables": {
@@ -150,6 +174,9 @@
 				"defaultValue": "datacontainer"
 			},
 			"table": {
+				"type": "String"
+			},
+			"FileName": {
 				"type": "String"
 			}
 		},
