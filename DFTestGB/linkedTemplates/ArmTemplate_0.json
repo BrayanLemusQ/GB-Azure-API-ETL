@@ -27,11 +27,11 @@
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateDataTriggerJob_properties_typeProperties_scope": {
+		"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
+		"UpdateDataTriggerJob_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		}
@@ -792,44 +792,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/UpdateDataTriggerJob')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "UpdateDataJobs",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					},
-					{
-						"pipelineReference": {
-							"referenceName": "UpdateDataHired_employees",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "CustomEventsTrigger",
-				"typeProperties": {
-					"subjectEndsWith": "",
-					"subjectBeginsWith": "",
-					"scope": "[parameters('UpdateDataTriggerJob_properties_typeProperties_scope')]",
-					"events": [
-						"UpdateEventJob"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/UpdateDataJobs')]",
-				"[concat(variables('factoryId'), '/pipelines/UpdateDataHired_employees')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/UpdateEventTriggerDepartment')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -857,6 +819,36 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/UpdateDataDepartment')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UpdateDataTriggerJob')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "UpdateDataJobs",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('UpdateDataTriggerJob_properties_typeProperties_scope')]",
+					"events": [
+						"UpdateEventJob"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/UpdateDataJobs')]"
 			]
 		}
 	]

@@ -20,10 +20,10 @@
 		"UpdateDataTriggerHired_properties_typeProperties_scope": {
 			"value": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateDataTriggerJob_properties_typeProperties_scope": {
+		"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
 			"value": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
+		"UpdateDataTriggerJob_properties_typeProperties_scope": {
 			"value": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		}
 	}
