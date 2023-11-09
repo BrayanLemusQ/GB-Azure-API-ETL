@@ -8,9 +8,6 @@
 				"pipelineReference": {
 					"referenceName": "UpdateDataJobs",
 					"type": "PipelineReference"
-				},
-				"parameters": {
-					"FileName": "@triggerBody().data"
 				}
 			}
 		],
