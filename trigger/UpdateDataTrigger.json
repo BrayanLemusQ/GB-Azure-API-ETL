@@ -6,8 +6,11 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "UpdateData",
+					"referenceName": "UpdateDataJobs",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FileName": "@triggerBody().data"
 				}
 			}
 		],

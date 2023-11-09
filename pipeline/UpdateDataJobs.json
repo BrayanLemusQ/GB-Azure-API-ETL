@@ -1,5 +1,5 @@
 {
-	"name": "UpdateData",
+	"name": "UpdateDataJobs",
 	"properties": {
 		"activities": [
 			{
@@ -155,9 +155,6 @@
 				"defaultValue": "datacontainer"
 			},
 			"table": {
-				"type": "String"
-			},
-			"test_variable": {
 				"type": "String"
 			}
 		},
