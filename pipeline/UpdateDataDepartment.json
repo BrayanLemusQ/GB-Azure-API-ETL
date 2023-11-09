@@ -1,9 +1,9 @@
 {
-	"name": "EmployeesPerDepartment",
+	"name": "UpdateDataDepartment",
 	"properties": {
 		"activities": [
 			{
-				"name": "Set variable1",
+				"name": "Set DateTime Execution",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"policy": {
@@ -12,21 +12,170 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "variable",
+					"variableName": "LastFileDateTime",
 					"value": {
-						"value": "@pipeline().parameters.filename",
+						"value": "@formatDateTime(utcNow(), 'yyyyMMdd_HHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy Bronze layer",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set File Execution",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_StagingCsvFiles",
+						"type": "DatasetReference",
+						"parameters": {
+							"File_System": {
+								"value": "@variables('FileSystem')",
+								"type": "Expression"
+							},
+							"Directory": "initial",
+							"File_Name": {
+								"value": "@concat(variables('FileName'), '.csv')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_StagingCsvFiles",
+						"type": "DatasetReference",
+						"parameters": {
+							"File_System": {
+								"value": "@variables('FileSystem')",
+								"type": "Expression"
+							},
+							"Directory": "bronze",
+							"File_Name": {
+								"value": "@concat(variables('FileName'),variables('LastFileDateTime'),'.csv')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Update Silver Layer",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Copy Bronze layer",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Repos/brayan.lemus.q@gmail.com/GB-Azure-API-ETL/databricksProject/TestNotebook",
+					"baseParameters": {
+						"lastFileDatetime": {
+							"value": "@variables('LastFileDateTime')",
+							"type": "Expression"
+						},
+						"table": "jobs"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set File Execution",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set DateTime Execution",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FileName",
+					"value": {
+						"value": "departments",
 						"type": "Expression"
 					}
 				}
 			}
 		],
-		"parameters": {
-			"filename": {
-				"type": "string"
-			}
-		},
 		"variables": {
-			"variable": {
+			"LastFileDateTime": {
+				"type": "String"
+			},
+			"FileSystem": {
+				"type": "String"
+			},
+			"table": {
+				"type": "String"
+			},
+			"FileName": {
 				"type": "String"
 			}
 		},
