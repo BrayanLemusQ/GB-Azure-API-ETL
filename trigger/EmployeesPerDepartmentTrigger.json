@@ -8,9 +8,6 @@
 				"pipelineReference": {
 					"referenceName": "EmployeesPerDepartment",
 					"type": "PipelineReference"
-				},
-				"parameters": {
-					"filename": "@triggerBody().data.make"
 				}
 			}
 		],
