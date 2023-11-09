@@ -141,11 +141,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"FileName": {
-				"type": "string"
-			}
-		},
 		"variables": {
 			"LastFileDateTime": {
 				"type": "String"
