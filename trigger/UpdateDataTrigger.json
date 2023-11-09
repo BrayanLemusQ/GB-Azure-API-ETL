@@ -9,6 +9,12 @@
 					"referenceName": "UpdateDataJobs",
 					"type": "PipelineReference"
 				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "UpdateDataHired_employees",
+					"type": "PipelineReference"
+				}
 			}
 		],
 		"type": "CustomEventsTrigger",
@@ -17,7 +23,7 @@
 			"subjectBeginsWith": "",
 			"scope": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents",
 			"events": [
-				"UpdateEventJob"
+				"UpdateEventHired"
 			]
 		}
 	}
