@@ -82,7 +82,7 @@
 							},
 							"Directory": "initial",
 							"File_Name": {
-								"value": "@pipeline().parameters.FileName",
+								"value": "jobs.csv",
 								"type": "Expression"
 							}
 						}
