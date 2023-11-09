@@ -23,15 +23,15 @@
 			"type": "string",
 			"defaultValue": "1108-014710-2jqobjmt"
 		},
-		"UpdateDataTrigger_properties_typeProperties_scope": {
+		"UpdateDataTriggerHired_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"trigger1_properties_EmployeesPerJobandDepartment_parameters_param_test": {
+		"UpdateDataTriggerJob_properties_typeProperties_scope": {
 			"type": "string",
-			"defaultValue": "@triggerBody().data.myValue"
+			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"trigger1_properties_typeProperties_scope": {
+		"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
@@ -74,14 +74,14 @@
 					"AzureDatabricks_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('AzureDatabricks_properties_typeProperties_existingClusterId')]"
 					},
-					"trigger1_properties_EmployeesPerJobandDepartment_parameters_param_test": {
-						"value": "[parameters('trigger1_properties_EmployeesPerJobandDepartment_parameters_param_test')]"
+					"UpdateDataTriggerHired_properties_typeProperties_scope": {
+						"value": "[parameters('UpdateDataTriggerHired_properties_typeProperties_scope')]"
 					},
-					"trigger1_properties_typeProperties_scope": {
-						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
+					"UpdateDataTriggerJob_properties_typeProperties_scope": {
+						"value": "[parameters('UpdateDataTriggerJob_properties_typeProperties_scope')]"
 					},
-					"UpdateDataTrigger_properties_typeProperties_scope": {
-						"value": "[parameters('UpdateDataTrigger_properties_typeProperties_scope')]"
+					"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
+						"value": "[parameters('UpdateEventTriggerDepartment_properties_typeProperties_scope')]"
 					}
 				}
 			},

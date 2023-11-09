@@ -23,15 +23,15 @@
 			"type": "string",
 			"defaultValue": "1108-014710-2jqobjmt"
 		},
-		"trigger1_properties_EmployeesPerJobandDepartment_parameters_param_test": {
-			"type": "string",
-			"defaultValue": "@triggerBody().data.myValue"
-		},
-		"trigger1_properties_typeProperties_scope": {
+		"UpdateDataTriggerHired_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateDataTrigger_properties_typeProperties_scope": {
+		"UpdateDataTriggerJob_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
+		},
+		"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		}
@@ -40,88 +40,6 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/EmployeesPerDepartment')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "variable",
-							"value": {
-								"value": "@pipeline().parameters.filename",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"filename": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"variable": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EmployeesPerJobandDepartment')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "variable",
-							"value": {
-								"value": "@pipeline().parameters.param_test",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"param_test": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"variable": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -256,39 +174,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "EmployeesPerJobandDepartment",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"param_test": "[parameters('trigger1_properties_EmployeesPerJobandDepartment_parameters_param_test')]"
-						}
-					}
-				],
-				"type": "CustomEventsTrigger",
-				"typeProperties": {
-					"subjectEndsWith": "",
-					"subjectBeginsWith": "",
-					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
-					"events": [
-						"EventoNuevo"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/EmployeesPerJobandDepartment')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/UpdateDataJobs')]",
+			"name": "[concat(parameters('factoryName'), '/UpdateDataDepartment')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -311,11 +197,11 @@
 						}
 					},
 					{
-						"name": "Copy data1",
+						"name": "Copy Bronze layer",
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "Set DateTime Execution",
+								"activity": "Set File Execution",
 								"dependencyConditions": [
 									"Completed"
 								]
@@ -373,7 +259,7 @@
 									},
 									"Directory": "initial",
 									"File_Name": {
-										"value": "jobs.csv",
+										"value": "@concat(variables('FileName'), '.csv')",
 										"type": "Expression"
 									}
 								}
@@ -390,7 +276,7 @@
 									},
 									"Directory": "bronze",
 									"File_Name": {
-										"value": "@concat('jobs',variables('LastFileDateTime'),'.csv')",
+										"value": "@concat(variables('FileName'),variables('LastFileDateTime'),'.csv')",
 										"type": "Expression"
 									}
 								}
@@ -398,11 +284,405 @@
 						]
 					},
 					{
-						"name": "Notebook1",
+						"name": "Update Silver Layer",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "Copy data1",
+								"activity": "Copy Bronze layer",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/brayan.lemus.q@gmail.com/GB-Azure-API-ETL/databricksProject/TestNotebook",
+							"baseParameters": {
+								"lastFileDatetime": {
+									"value": "@variables('LastFileDateTime')",
+									"type": "Expression"
+								},
+								"table": {
+									"value": "@variables('FileName')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Set File Execution",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set DateTime Execution",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "FileName",
+							"value": {
+								"value": "departments",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"LastFileDateTime": {
+						"type": "String"
+					},
+					"FileSystem": {
+						"type": "String",
+						"defaultValue": "datacontainer"
+					},
+					"table": {
+						"type": "String"
+					},
+					"FileName": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_StagingCsvFiles')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UpdateDataHired_employees')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set DateTime Execution",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "LastFileDateTime",
+							"value": {
+								"value": "@formatDateTime(utcNow(), 'yyyyMMdd_HHmmss')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Copy Bronze layer",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set File Execution",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_StagingCsvFiles",
+								"type": "DatasetReference",
+								"parameters": {
+									"File_System": {
+										"value": "@variables('FileSystem')",
+										"type": "Expression"
+									},
+									"Directory": "initial",
+									"File_Name": {
+										"value": "@concat(variables('FileName'), '.csv')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_StagingCsvFiles",
+								"type": "DatasetReference",
+								"parameters": {
+									"File_System": {
+										"value": "@variables('FileSystem')",
+										"type": "Expression"
+									},
+									"Directory": "bronze",
+									"File_Name": {
+										"value": "@concat(variables('FileName'),variables('LastFileDateTime'),'.csv')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Update Silver Layer",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Copy Bronze layer",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/brayan.lemus.q@gmail.com/GB-Azure-API-ETL/databricksProject/TestNotebook",
+							"baseParameters": {
+								"lastFileDatetime": {
+									"value": "@variables('LastFileDateTime')",
+									"type": "Expression"
+								},
+								"table": {
+									"value": "@variables('FileName')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Set File Execution",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set DateTime Execution",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "FileName",
+							"value": {
+								"value": "hired_employees",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"LastFileDateTime": {
+						"type": "String"
+					},
+					"FileSystem": {
+						"type": "String",
+						"defaultValue": "datacontainer"
+					},
+					"table": {
+						"type": "String"
+					},
+					"FileName": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_StagingCsvFiles')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UpdateDataJobs')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set DateTime Execution",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "LastFileDateTime",
+							"value": {
+								"value": "@formatDateTime(utcNow(), 'yyyyMMdd_HHmmss')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Copy Bronze layer",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set File Execution",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_StagingCsvFiles",
+								"type": "DatasetReference",
+								"parameters": {
+									"File_System": {
+										"value": "@variables('FileSystem')",
+										"type": "Expression"
+									},
+									"Directory": "initial",
+									"File_Name": {
+										"value": "@concat(variables('FileName'), '.csv')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_StagingCsvFiles",
+								"type": "DatasetReference",
+								"parameters": {
+									"File_System": {
+										"value": "@variables('FileSystem')",
+										"type": "Expression"
+									},
+									"Directory": "bronze",
+									"File_Name": {
+										"value": "@concat(variables('FileName'),variables('LastFileDateTime'),'.csv')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Update Silver Layer",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Copy Bronze layer",
 								"dependencyConditions": [
 									"Completed"
 								]
@@ -430,6 +710,30 @@
 							"referenceName": "AzureDatabricks",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "Set File Execution",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set DateTime Execution",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "FileName",
+							"value": {
+								"value": "jobs",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -445,6 +749,9 @@
 					},
 					"table": {
 						"type": "String"
+					},
+					"FileName": {
+						"type": "String"
 					}
 				},
 				"annotations": []
@@ -455,7 +762,37 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/UpdateDataTrigger')]",
+			"name": "[concat(parameters('factoryName'), '/UpdateDataTriggerHired')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "UpdateDataHired_employees",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('UpdateDataTriggerHired_properties_typeProperties_scope')]",
+					"events": [
+						"UpdateEventHired"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/UpdateDataHired_employees')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UpdateDataTriggerJob')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -468,20 +805,58 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "UpdateDataHired_employees",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
 					}
 				],
 				"type": "CustomEventsTrigger",
 				"typeProperties": {
 					"subjectEndsWith": "",
 					"subjectBeginsWith": "",
-					"scope": "[parameters('UpdateDataTrigger_properties_typeProperties_scope')]",
+					"scope": "[parameters('UpdateDataTriggerJob_properties_typeProperties_scope')]",
 					"events": [
-						"UpdateEvent"
+						"UpdateEventJob"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/UpdateDataJobs')]"
+				"[concat(variables('factoryId'), '/pipelines/UpdateDataJobs')]",
+				"[concat(variables('factoryId'), '/pipelines/UpdateDataHired_employees')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UpdateEventTriggerDepartment')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "UpdateDataDepartment",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('UpdateEventTriggerDepartment_properties_typeProperties_scope')]",
+					"events": [
+						"UpdateEventDep"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/UpdateDataDepartment')]"
 			]
 		}
 	]
