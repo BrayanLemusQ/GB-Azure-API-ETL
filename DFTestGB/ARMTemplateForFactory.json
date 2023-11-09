@@ -27,6 +27,10 @@
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
+		"EmployeesPerDepartmentTrigger_properties_EmployeesPerDepartment_parameters_filename": {
+			"type": "string",
+			"defaultValue": "@triggerBody().data.make"
+		},
 		"EmployeesPerDepartmentTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
@@ -415,7 +419,9 @@
 							"referenceName": "EmployeesPerDepartment",
 							"type": "PipelineReference"
 						},
-						"parameters": {}
+						"parameters": {
+							"filename": "[parameters('EmployeesPerDepartmentTrigger_properties_EmployeesPerDepartment_parameters_filename')]"
+						}
 					}
 				],
 				"type": "CustomEventsTrigger",
