@@ -23,15 +23,19 @@
 			"type": "string",
 			"defaultValue": "1108-014710-2jqobjmt"
 		},
+		"EmployeesPerJobAndDepartmentTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
+		},
 		"UpdateDataTriggerHired_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
+		"UpdateDataTriggerJob_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateDataTriggerJob_properties_typeProperties_scope": {
+		"UpdateEventTriggerDepartment_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		}
@@ -74,6 +78,48 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmployeesPerJobAndDepartment')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EmployeesPerDeparmentAndJob",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/brayan.lemus.q@gmail.com/GB-Azure-API-ETL/databricksProject/EmployeesPerJobAndDepartment",
+							"baseParameters": {
+								"year": "2021"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "GoldPipelines"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DS_BronzeCsvFiles')]",
@@ -363,6 +409,9 @@
 						"type": "String"
 					}
 				},
+				"folder": {
+					"name": "BronzeAndSilverPipelines"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
@@ -560,6 +609,9 @@
 						"type": "String"
 					}
 				},
+				"folder": {
+					"name": "BronzeAndSilverPipelines"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
@@ -754,11 +806,44 @@
 						"type": "String"
 					}
 				},
+				"folder": {
+					"name": "BronzeAndSilverPipelines"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_StagingCsvFiles')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmployeesPerJobAndDepartmentTrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "EmployeesPerJobAndDepartment",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('EmployeesPerJobAndDepartmentTrigger_properties_typeProperties_scope')]",
+					"events": [
+						"EmpXJobAndDep"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/EmployeesPerJobAndDepartment')]"
 			]
 		},
 		{
@@ -792,36 +877,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/UpdateEventTriggerDepartment')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "UpdateDataDepartment",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "CustomEventsTrigger",
-				"typeProperties": {
-					"subjectEndsWith": "",
-					"subjectBeginsWith": "",
-					"scope": "[parameters('UpdateEventTriggerDepartment_properties_typeProperties_scope')]",
-					"events": [
-						"UpdateEventDep"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/UpdateDataDepartment')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/UpdateDataTriggerJob')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -849,6 +904,36 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/UpdateDataJobs')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UpdateEventTriggerDepartment')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "UpdateDataDepartment",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "CustomEventsTrigger",
+				"typeProperties": {
+					"subjectEndsWith": "",
+					"subjectBeginsWith": "",
+					"scope": "[parameters('UpdateEventTriggerDepartment_properties_typeProperties_scope')]",
+					"events": [
+						"UpdateEventDep"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/UpdateDataDepartment')]"
 			]
 		}
 	]
