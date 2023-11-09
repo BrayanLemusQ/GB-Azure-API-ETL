@@ -23,15 +23,15 @@
 			"type": "string",
 			"defaultValue": "1108-014710-2jqobjmt"
 		},
-		"TriggerFileName_properties_UpdateData_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "@triggerBody().data.filename"
-		},
-		"TriggerFileName_properties_typeProperties_scope": {
+		"UpdateDataTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateDataTrigger_properties_typeProperties_scope": {
+		"trigger1_properties_pipeline1_parameters_filename": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"trigger1_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
@@ -74,11 +74,11 @@
 					"AzureDatabricks_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('AzureDatabricks_properties_typeProperties_existingClusterId')]"
 					},
-					"TriggerFileName_properties_UpdateData_parameters_FileName": {
-						"value": "[parameters('TriggerFileName_properties_UpdateData_parameters_FileName')]"
+					"trigger1_properties_pipeline1_parameters_filename": {
+						"value": "[parameters('trigger1_properties_pipeline1_parameters_filename')]"
 					},
-					"TriggerFileName_properties_typeProperties_scope": {
-						"value": "[parameters('TriggerFileName_properties_typeProperties_scope')]"
+					"trigger1_properties_typeProperties_scope": {
+						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
 					},
 					"UpdateDataTrigger_properties_typeProperties_scope": {
 						"value": "[parameters('UpdateDataTrigger_properties_typeProperties_scope')]"
