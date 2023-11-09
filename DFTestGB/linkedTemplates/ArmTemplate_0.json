@@ -31,10 +31,6 @@
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
 		},
-		"UpdateDataTrigger_properties_UpdateDataJobs_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "@triggerBody().data"
-		},
 		"UpdateDataTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/41773401-c5d6-48ca-a753-2dc75ba31644/resourceGroups/DataTestGB/providers/Microsoft.EventGrid/topics/TopicApiEvents"
@@ -377,7 +373,7 @@
 									},
 									"Directory": "initial",
 									"File_Name": {
-										"value": "@pipeline().parameters.FileName",
+										"value": "jobs.csv",
 										"type": "Expression"
 									}
 								}
@@ -439,11 +435,6 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
-				"parameters": {
-					"FileName": {
-						"type": "string"
-					}
-				},
 				"variables": {
 					"LastFileDateTime": {
 						"type": "String"
@@ -476,9 +467,7 @@
 							"referenceName": "UpdateDataJobs",
 							"type": "PipelineReference"
 						},
-						"parameters": {
-							"FileName": "[parameters('UpdateDataTrigger_properties_UpdateDataJobs_parameters_FileName')]"
-						}
+						"parameters": {}
 					}
 				],
 				"type": "CustomEventsTrigger",
